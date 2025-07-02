@@ -1,12 +1,65 @@
-# React + Vite
+# Front Auth Spring
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é a interface web de autenticação integrada a uma API Spring Boot. Ele permite aos usuários se registrarem, fazerem login e gerenciarem sessões autenticadas com uso de JWT (JSON Web Token), sendo ela o CRUD completo de despesas.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologias Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [React.js](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [Axios](https://axios-http.com/)
+- [React Router DOM](https://reactrouter.com/)
+- Integração com backend em Spring Boot (JWT Auth)
 
-## Expanding the ESLint configuration
+## 🎯 Funcionalidades
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Cadastro de usuário
+- Login com autenticação JWT
+- Proteção de rotas
+- Armazenamento seguro do token no localStorage
+
+## 📦 Instalação e Execução
+
+### Pré-requisitos
+
+- Node.js e npm instalados
+- Backend em execução (ver: [API Spring Auth](https://github.com/NiltonCBS/spring-auth))
+
+### Passo a passo
+
+```bash
+# Clone o repositório
+git clone https://github.com/NiltonCBS/front-auth-spring.git
+
+# Acesse a pasta
+cd front-auth-spring
+
+# Instale as dependências
+npm install
+
+# Execute o projeto
+npm run dev
+
+🔐 O projeto se comunica com uma API Spring Boot que deve estar rodando em paralelo, geralmente na porta 8080.
+
+## 📂 Estrutura de Pastas
+
+
+front-auth-spring/
+│
+├── src/
+│   ├── pages/            # Páginas (Login, Register, Despesas)
+│   ├── App.jsx           # Componente principal
+│   ├── main.jsx          # Ponto de entrada do React
+│
+├── public/
+│
+├── package.json
+└── vite.config.js
+
+## 🔒 Autenticação
+
+Após o login, o token JWT é armazenado no localStorage.
+
+As requisições autenticadas incluem o token no cabeçalho Authorization: Bearer <token>.
+
+As rotas protegidas só são acessíveis com um token válido.

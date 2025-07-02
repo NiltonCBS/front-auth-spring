@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Edit, Trash2, Plus, DollarSign, Calendar, CreditCard, AlertCircle, CheckCircle } from 'lucide-react';
+import { Edit, Trash2, Plus, DollarSign, Calendar, CreditCard, AlertCircle, CheckCircle, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Despesas = () => {
   const [despesas, setDespesas] = useState([]);
@@ -14,6 +15,7 @@ const Despesas = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
   const API_BASE = 'http://localhost:8080';
@@ -54,9 +56,7 @@ const Despesas = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const handleSubmit = async () => {
     if (!form.descricao.trim() || !form.valor || Number(form.valor) <= 0) {
       setError('Preencha todos os campos corretamente');
       return;
@@ -172,6 +172,14 @@ const Despesas = () => {
     }
   };
 
+  const handleLogout = () => {
+    if (window.confirm('Tem certeza que deseja sair?')) {
+      localStorage.removeItem('token');
+      navigate('/');
+      
+    }
+  };
+
   const resetForm = () => {
     setForm({
       id: null,
@@ -252,9 +260,19 @@ const Despesas = () => {
                 <p className="text-gray-600">Gerencie suas despesas de forma eficiente</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">Total de Despesas</p>
-              <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDespesas)}</p>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Total de Despesas</p>
+                <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDespesas)}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                title="Sair do sistema"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Sair</span>
+              </button>
             </div>
           </div>
         </div>
@@ -297,7 +315,7 @@ const Despesas = () => {
                 )}
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Descrição *
@@ -356,7 +374,7 @@ const Despesas = () => {
                 </div>
 
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   disabled={loading}
                   className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
                 >
@@ -369,7 +387,7 @@ const Despesas = () => {
                     </>
                   )}
                 </button>
-              </form>
+              </div>
             </div>
           </div>
 
