@@ -45,14 +45,11 @@ npm run dev
 ## 📂 Estrutura de Pastas
 
 front-auth-spring/
-│
 ├── src/
-│   ├── pages/            # Páginas (Login, Register, Despesas)
-│   ├── App.jsx           # Componente principal
-│   ├── main.jsx          # Ponto de entrada do React
-│
+│ ├── pages/ # Páginas (Login, Register, Despesas)
+│ ├── App.jsx # Componente principal
+│ ├── main.jsx # Ponto de entrada do React
 ├── public/
-│
 ├── package.json
 └── vite.config.js
 
