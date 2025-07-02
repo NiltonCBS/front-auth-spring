@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, Plus, DollarSign, Calendar, CreditCard, AlertCircle, CheckCircle, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import PageHeader from '../components/layout/PageHeader';
+import FormContainer from '../components/forms/FormContainer';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
+import Alert from '../components/ui/Alert';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+
 const Despesas = () => {
   const [despesas, setDespesas] = useState([]);
   const [form, setForm] = useState({ 
@@ -75,7 +84,6 @@ const Despesas = () => {
       };
 
       if (isEditing) {
-        // Atualizar despesa existente
         const response = await fetch(`${API_BASE}/despesas/alterar/${form.id}`, {
           method: 'PUT',
           headers: {
@@ -97,7 +105,6 @@ const Despesas = () => {
         setSuccess('Despesa atualizada com sucesso!');
         
       } else {
-        // Criar nova despesa
         const response = await fetch(`${API_BASE}/despesas/cadastrar`, {
           method: 'POST',
           headers: {
@@ -176,7 +183,6 @@ const Despesas = () => {
     if (window.confirm('Tem certeza que deseja sair?')) {
       localStorage.removeItem('token');
       navigate('/');
-      
     }
   };
 
@@ -236,11 +242,11 @@ const Despesas = () => {
   if (!token) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
+        <Card className="p-8 text-center">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Acesso Negado</h2>
           <p className="text-gray-600">Você precisa estar logado para acessar esta página.</p>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -248,152 +254,113 @@ const Despesas = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-500 p-3 rounded-full">
-                <DollarSign className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Controle de Despesas</h1>
-                <p className="text-gray-600">Gerencie suas despesas de forma eficiente</p>
-              </div>
-            </div>
+        {/* Header usando PageHeader component */}
+        <PageHeader 
+          title="Controle de Despesas"
+          subtitle="Gerencie suas despesas de forma eficiente"
+          icon={<DollarSign className="h-6 w-6" />}
+          rightContent={
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm text-gray-500">Total de Despesas</p>
                 <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDespesas)}</p>
               </div>
-              <button
+              <Button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                variant="danger"
+                size="sm"
+                className="flex items-center space-x-2"
                 title="Sair do sistema"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Sair</span>
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          }
+        />
 
-        {/* Messages */}
+        {/* Messages usando Alert component */}
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-              <span className="text-green-800">{success}</span>
-            </div>
-          </div>
+          <Alert type="success" className="mb-6">
+            {success}
+          </Alert>
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
-              <span className="text-red-800">{error}</span>
-            </div>
-          </div>
+          <Alert type="error" className="mb-6">
+            {error}
+          </Alert>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Formulário */}
+          {/* Formulário usando FormContainer */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {isEditing ? 'Editar Despesa' : 'Nova Despesa'}
-                </h2>
-                {isEditing && (
-                  <button
-                    onClick={resetForm}
-                    className="text-gray-500 hover:text-gray-700"
-                    title="Cancelar edição"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-
+            <FormContainer
+              title={isEditing ? 'Editar Despesa' : 'Nova Despesa'}
+              onCancel={isEditing ? resetForm : null}
+            >
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Descrição *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Almoço, Gasolina, Supermercado..."
-                    value={form.descricao}
-                    onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                </div>
+                <Input
+                  label="Descrição *"
+                  type="text"
+                  placeholder="Ex: Almoço, Gasolina, Supermercado..."
+                  value={form.descricao}
+                  onChange={(e) => setForm({ ...form, descricao: e.target.value })}
+                  required
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Forma de Pagamento
-                  </label>
-                  <select
-                    value={form.formaPagamento}
-                    onChange={(e) => setForm({ ...form, formaPagamento: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="PIX">📱 PIX</option>
-                    <option value="CARTAO">💳 Cartão</option>
-                    <option value="DINHEIRO">💵 Dinheiro</option>
-                  </select>
-                </div>
+                <Select
+                  label="Forma de Pagamento"
+                  value={form.formaPagamento}
+                  onChange={(e) => setForm({ ...form, formaPagamento: e.target.value })}
+                  options={[
+                    { value: 'PIX', label: '📱 PIX' },
+                    { value: 'CARTAO', label: '💳 Cartão' },
+                    { value: 'DINHEIRO', label: '💵 Dinheiro' }
+                  ]}
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Valor *
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    value={form.valor}
-                    onChange={(e) => setForm({ ...form, valor: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                </div>
+                <Input
+                  label="Valor *"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0,00"
+                  value={form.valor}
+                  onChange={(e) => setForm({ ...form, valor: e.target.value })}
+                  required
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Data
-                  </label>
-                  <input
-                    type="date"
-                    value={form.data}
-                    onChange={(e) => setForm({ ...form, data: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+                <Input
+                  label="Data"
+                  type="date"
+                  value={form.data}
+                  onChange={(e) => setForm({ ...form, data: e.target.value })}
+                />
 
-                <button
+                <Button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                  variant="primary"
+                  size="lg"
+                  className="w-full flex items-center justify-center space-x-2"
                 >
                   {loading ? (
-                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    <LoadingSpinner size="sm" />
                   ) : (
                     <>
                       <Plus className="h-5 w-5" />
                       <span>{isEditing ? 'Atualizar' : 'Adicionar'} Despesa</span>
                     </>
                   )}
-                </button>
+                </Button>
               </div>
-            </div>
+            </FormContainer>
           </div>
 
-          {/* Lista de Despesas */}
+          {/* Lista de Despesas usando Card */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md">
+            <Card>
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-gray-900">Despesas Registradas</h2>
@@ -406,7 +373,7 @@ const Despesas = () => {
               <div className="p-6">
                 {loading && despesas.length === 0 ? (
                   <div className="text-center py-8">
-                    <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <LoadingSpinner className="mx-auto mb-4" />
                     <p className="text-gray-600">Carregando despesas...</p>
                   </div>
                 ) : despesas.length === 0 ? (
@@ -418,10 +385,7 @@ const Despesas = () => {
                 ) : (
                   <div className="space-y-3">
                     {despesas.map((despesa) => (
-                      <div
-                        key={despesa.id}
-                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                      >
+                      <Card key={despesa.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
@@ -444,30 +408,34 @@ const Despesas = () => {
                           </div>
                           
                           <div className="flex items-center space-x-2">
-                            <button
+                            <Button
                               onClick={() => handleEdit(despesa)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 hover:bg-blue-50"
                               title="Editar despesa"
                               disabled={loading}
                             >
                               <Edit className="h-4 w-4" />
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={() => handleDelete(despesa.id)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 hover:bg-red-50"
                               title="Excluir despesa"
                               disabled={loading}
                             >
                               <Trash2 className="h-4 w-4" />
-                            </button>
+                            </Button>
                           </div>
                         </div>
-                      </div>
+                      </Card>
                     ))}
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

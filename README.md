@@ -43,23 +43,17 @@ npm run dev
 🔐 O projeto se comunica com uma API Spring Boot que deve estar rodando em paralelo, geralmente na porta 8080.
 
 ## 📂 Estrutura de Pastas
-
+```
 front-auth-spring/
-
 ├── src/
-
-│ ├── pages/ # Páginas (Login, Register, Despesas)
-
-│ ├── App.jsx # Componente principal
-
-│ ├── main.jsx # Ponto de entrada do React
-
+│ ├── components/   # Componentes para reutilização
+│ ├── pages/        # Páginas (Login, Register, Despesas)
+│ ├── App.jsx       # Componente principal
+│ ├── main.jsx      # Ponto de entrada do React
 ├── public/
-
 ├── package.json
-
 └── vite.config.js
-
+```
 ## 🔒 Autenticação
 
 Após o login, o token JWT é armazenado no localStorage.
