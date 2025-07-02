@@ -38,11 +38,11 @@ npm install
 
 # Execute o projeto
 npm run dev
+```
 
 🔐 O projeto se comunica com uma API Spring Boot que deve estar rodando em paralelo, geralmente na porta 8080.
 
 ## 📂 Estrutura de Pastas
-
 
 front-auth-spring/
 │
